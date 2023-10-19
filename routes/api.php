@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\CurrencyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +15,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::apiResource('/currencies', CurrencyController::class)->only('index');
+
+
+Route::any('{any}', function () {
+    return response()->json(['error' => 'Invalid API URI'], 404);
+})->where('any', '.*');
