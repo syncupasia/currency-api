@@ -15,8 +15,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::apiResource('/currencies', CurrencyController::class)->only('index');
+Route::get('/currencies/convert/{base_currency}/{target_currency}', [CurrencyController::class, 'convert']);
 
+Route::apiResource('/currencies', CurrencyController::class)->only('index');
 
 Route::any('{any}', function () {
     return response()->json(['error' => 'Invalid API URI'], 404);
