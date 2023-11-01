@@ -18,5 +18,7 @@ class UnknownApiPathTest extends TestCase
         $response = $this->get('/api/c');
 
         $response->assertStatus(404);
+
+        $response->assertJsonStructure(['error']);
     }
 }

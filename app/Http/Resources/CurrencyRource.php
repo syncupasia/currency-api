@@ -19,7 +19,8 @@ class CurrencyRource extends JsonResource
             'name' => $this->name,
             'current_rate' => $this->current_rate,
             'previous_rate' => $this->previous_rate,
-            'base_currency' => $this->base_currency
+            'base_currency' => $this->base_currency,
+            'last_modified' => $this->updated_at
         ];
     }
 }
