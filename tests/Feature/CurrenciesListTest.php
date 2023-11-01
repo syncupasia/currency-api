@@ -6,20 +6,39 @@ use Tests\TestCase;
 
 class CurrenciesListTest extends TestCase
 {
+
     public function test_currencies_status_count_structure()
     {
         $response = $this->get('/api/currencies');
+        $this->assertStatusCountStructure($response, 192);
+    }
+
+    public function test_currencies_with_iso_codes()
+    {
+        $response = $this->get('/api/currencies?iso_codes[]=usd&iso_codes[]=cad');
+        $this->assertStatusCountStructure($response, 2);
+        $responseData = $response->json()['data'];
+        $isoCodes = ['USD', 'CAD'];
+    
+        foreach ($responseData as $currency) {
+            $this->assertContains($currency['iso_code'], $isoCodes);
+        }
+    }
+
+    private function assertStatusCountStructure($response, $count) {
         $response->assertStatus(200);
-        $response->assertJsonCount(192, 'data');
+        $response->assertJsonCount($count, 'data');
         $response->assertJsonStructure([
             'data' => [
                 '*' => [
                     'iso_code',
                     'name',
                     'current_rate',
-                    'previous_rate'
+                    'previous_rate',
+                    'last_modified'
                 ]
             ]
         ]);
     }
+
 }

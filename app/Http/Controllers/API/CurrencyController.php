@@ -6,13 +6,20 @@ use App\Models\Currency;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CurrencyRource;
 use App\Services\CurrencyConversionService;
+use App\Http\Requests\SearchCurrencyRequest;
 use App\Http\Requests\ConvertCurrencyRequest;
 
 class CurrencyController extends Controller
 {
-    public function index()
+    public function index(SearchCurrencyRequest $request)
     {
-        return CurrencyRource::collection(Currency::all());
+        $isoCodes = $request->input('iso_codes');
+        if (!is_null($isoCodes)) {
+            $currencies = Currency::whereIn('iso_code', $isoCodes)->get();
+        } else {
+            $currencies = Currency::all();
+        }
+        return CurrencyRource::collection($currencies);
     }
 
     /**
