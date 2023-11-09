@@ -3,16 +3,22 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
+use App\Models\Currency;
 use App\Services\CurrencyConversionService;
 
 class CurrencyConversionServiceTest extends TestCase
 {
     private $service;
+    private $amount;
+    private $validAmount;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->service = new CurrencyConversionService();
+        $rate = Currency::where('iso_code', 'CAD')->value('current_rate');
+        $this->amount = 100;
+        $this->validAmount = $rate * $this->amount;
     }
 
     public function test_valid_calculation_usd_cad()
@@ -20,9 +26,9 @@ class CurrencyConversionServiceTest extends TestCase
         $result = $this->service->calculate([
             'base_currency' => 'USD',
             'target_currency' => 'CAD',
-            'amount' => 100
+            'amount' => $this->amount
         ]);
-        $this->assertEquals(99, $result);
+        $this->assertEquals($this->validAmount, $result);
     }
 
     public function test_invalid_input_no_amount()
@@ -39,7 +45,7 @@ class CurrencyConversionServiceTest extends TestCase
         $result = $this->service->calculate([
             'base_currency' => 'US',
             'target_currency' => 'CAD',
-            'amount' => 100
+            'amount' => $this->amount
         ]);
         $this->assertFalse($result);
     }
@@ -49,7 +55,7 @@ class CurrencyConversionServiceTest extends TestCase
         $params = [
             'base_currency' => 'CAD',
             'target_currency' => 'CAD',
-            'amount' => 100
+            'amount' => $this->amount
         ];
         $result = $this->service->calculate($params);
         $this->assertEquals($params['amount'], $result);

@@ -20,7 +20,7 @@ class CurrencyConversionService
 
         if ($params['base_currency'] === $params['target_currency']) {
             // Conversion to the same currency, no change needed
-            return $params['amount'];
+            return floatval($params['amount']);
         }
 
         $currencies = Currency::all()->keyBy('iso_code');
