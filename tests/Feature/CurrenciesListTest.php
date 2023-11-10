@@ -3,14 +3,16 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use App\Models\Currency;
 
 class CurrenciesListTest extends TestCase
 {
 
     public function test_currencies_status_count_structure()
     {
+        $totalCount = Currency::count();
         $response = $this->get('/api/currencies');
-        $this->assertStatusCountStructure($response, 192);
+        $this->assertStatusCountStructure($response, $totalCount);
     }
 
     public function test_currencies_with_iso_codes()
