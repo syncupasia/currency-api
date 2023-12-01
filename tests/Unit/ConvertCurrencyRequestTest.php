@@ -72,6 +72,18 @@ class ConvertCurrencyRequestTest extends TestCase
         );
     }
 
+    public function test_negative_amount_request()
+    {
+        // invalid due to string
+        $this->assertFalse(
+            $this->testConvertCurrencyRequest([
+                'base_currency' => 'usd',
+                'target_currency' => 'cad',
+                'amount' => -100,
+            ])
+        );
+    }
+
     private function testConvertCurrencyRequest($data) {
         $request = new ConvertCurrencyRequest();
         $validator = $this->app['validator']->make($data, $request->rules());

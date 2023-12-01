@@ -26,7 +26,7 @@ class ConvertCurrencyRequest extends ApiBaseRequest
         return [
             'base_currency' => ['required', 'size:3', 'alpha', new CurrencyCode],
             'target_currency' => ['required', 'size:3', 'alpha', new CurrencyCode],
-            'amount' => 'sometimes|numeric'
+            'amount' => 'sometimes|numeric|gt:0'
         ];
     }
 
