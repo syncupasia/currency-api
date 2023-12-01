@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Currency;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CurrencyRource;
+use App\Http\Resources\CurrencyResource;
 use App\Services\CurrencyConversionService;
 use App\Http\Requests\SearchCurrencyRequest;
 use App\Http\Requests\ConvertCurrencyRequest;
@@ -19,7 +19,7 @@ class CurrencyController extends Controller
         } else {
             $currencies = Currency::all();
         }
-        return CurrencyRource::collection($currencies);
+        return CurrencyResource::collection($currencies);
     }
 
     /**
