@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Currency;
+use App\Exports\CurrencyPdfExport;
+use App\Exports\CurrencyExcelExport;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CurrencyResource;
 use App\Services\CurrencyConversionService;
@@ -19,7 +21,23 @@ class CurrencyController extends Controller
         } else {
             $currencies = Currency::all();
         }
-        return CurrencyResource::collection($currencies);
+        $format = $request->input('format', 'json'); // default json
+
+        if ($format === 'excel') {
+            $currencyExport = new CurrencyExcelExport($currencies);
+            // Return the file as a download response and delete it after sending
+            $filePath = $currencyExport->export();
+            return response()->download($filePath)->deleteFileAfterSend(true);
+
+        } elseif ($format === 'pdf') {
+            $currencyExport = new CurrencyPdfExport($currencies);
+            $pdfExport = $currencyExport->export();
+            return $pdfExport->pdf->download($pdfExport->file);
+
+        } else {
+
+            return CurrencyResource::collection($currencies);
+        }
     }
 
     /**
