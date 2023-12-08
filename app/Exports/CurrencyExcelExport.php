@@ -24,7 +24,7 @@ class CurrencyExcelExport
         $sheet = $spreadsheet->getActiveSheet();
 
         // Add headers
-        $headers = ['ISO', 'Currency Name', 'Previous Rate', 'Current Rate'];
+        $headers = ['ISO', 'Currency', 'Previous Rate', 'Current Rate'];
         $sheet->fromArray([$headers], null, 'A1');
 
         // Add data
