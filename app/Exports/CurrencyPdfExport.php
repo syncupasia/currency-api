@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class CurrencyPdfExport
@@ -16,11 +17,17 @@ class CurrencyPdfExport
 
     public function export()
     {
-        $randomSuffix = Str::random(8);
-        $pdfObject = new \stdClass();
-        $html = view('exports.currencies-pdf', ['currencies' => $this->currencies])->render();
-        $pdfObject->pdf = PDF::loadHTML($html);
-        $pdfObject->file = 'currencies'. now()->format('Ymd') . '-' . $randomSuffix. '.pdf';
-        return $pdfObject;
+        try {
+            $randomSuffix = Str::random(8);
+            if (empty($html)) {
+                $html = view('exports.currencies-pdf', ['currencies' => $this->currencies])->render();
+            }
+            $pdf = PDF::loadHTML($html);
+            $file = 'currencies'. now()->format('Ymd') . '-' . $randomSuffix. '.pdf';
+            return ['error' => false, 'pdf' => $pdf, 'file' => $file];
+        } catch (\Exception $e) {
+            Log::error('ExcelExport Error: '.$e->getMessage());
+            return ['error' => true, 'message' => 'Failed pdf export. Please try again later.'];
+        }
     }
 }

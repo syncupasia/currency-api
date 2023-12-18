@@ -26,14 +26,21 @@ class CurrencyController extends Controller
         if ($format === 'excel') {
             $currencyExport = new CurrencyExcelExport($currencies);
             // Return the file as a download response and delete it after sending
-            $filePath = $currencyExport->export();
-            return response()->download($filePath)->deleteFileAfterSend(true);
+            $export = $currencyExport->export();
+            if ($export['error'] === false) {
+                return response()->download($export['file'])->deleteFileAfterSend(true);
+            } else {
+                return response()->json(['error' => $export['message']], 500);
+            }
 
         } elseif ($format === 'pdf') {
             $currencyExport = new CurrencyPdfExport($currencies);
-            $pdfExport = $currencyExport->export();
-            return $pdfExport->pdf->download($pdfExport->file);
-
+            $export = $currencyExport->export();
+            if ($export['error'] === false) {
+                return $export['pdf']->download($export['file']);
+            } else {
+                return response()->json(['error' => $export['message']], 500);
+            }
         } else {
 
             return CurrencyResource::collection($currencies);
