@@ -6,7 +6,7 @@ use Tests\TestCase;
 
 class CurrencyPdfDownloadTest extends TestCase
 {
-    public function testCurrencyExcelDownload()
+    public function testCurrencyPdfDownload()
     {
         $response = $this->get('/api/currencies?format=pdf');
 
