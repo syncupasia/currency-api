@@ -19,9 +19,7 @@ class CurrencyPdfExport
     {
         try {
             $randomSuffix = Str::random(8);
-            if (empty($html)) {
-                $html = view('exports.currencies-pdf', ['currencies' => $this->currencies])->render();
-            }
+            $html = view('exports.currencies-pdf', ['currencies' => $this->currencies])->render();
             $pdf = PDF::loadHTML($html);
             $file = 'currencies'. now()->format('Ymd') . '-' . $randomSuffix. '.pdf';
             return ['error' => false, 'pdf' => $pdf, 'file' => $file];
