@@ -17,8 +17,8 @@ class CreateCurrencyTable extends Migration
             $table->id();
             $table->string('iso_code', 3);
             $table->string('name');
-            $table->decimal('current_rate', 10, 2);
-            $table->decimal('previous_rate', 10, 2);
+            $table->decimal('current_rate', 10, 5);
+            $table->decimal('previous_rate', 10, 5);
             $table->string('base_currency', 3);
             $table->timestamps();
         });
