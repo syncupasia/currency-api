@@ -14,12 +14,12 @@ class Currency extends Model
     // Define an accessor for the current_rate attribute
     public function getCurrentRateAttribute($value)
     {
-        return rtrim(rtrim($value, '0'), '.');
+        return (float)rtrim(rtrim($value, '0'), '.');
     }
 
     // Define an accessor for the previous_rate attribute
     public function getPreviousRateAttribute($value)
     {
-        return rtrim(rtrim($value, '0'), '.');
+        return (float)rtrim(rtrim($value, '0'), '.');
     }
 }
