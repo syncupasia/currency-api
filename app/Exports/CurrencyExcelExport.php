@@ -25,58 +25,60 @@ class CurrencyExcelExport
             // Create a new worksheet
             $sheet = $spreadsheet->getActiveSheet();
 
+            // Add base currency info
+            $info = ['Base Currency: ' . $this->currencies[0]->base_currency];
+            $sheet->fromArray([$info], null, 'B1');
+            $sheet->getStyle('B1')->getFont()->setBold(true);
+
             // Add headers
             $headers = ['ISO', 'Currency', 'Previous Rate', 'Current Rate'];
-            $sheet->fromArray([$headers], null, 'A1');
+            $sheet->fromArray([$headers], null, 'A2');
 
             // Add data
             $data = $this->currencies->map(function ($currency) {
-                        return [
-                            $currency->iso_code,
-                            $currency->name,
-                            $currency->previous_rate,
-                            $currency->current_rate,
-                        ];
-                    })->toArray();
+                return [
+                    $currency->iso_code,
+                    $currency->name,
+                    $currency->previous_rate,
+                    $currency->current_rate,
+                ];
+            })->toArray();
             $count = count($this->currencies);
-            $rowStart = 1;
-            $rowEnd = 1 + $count;
-            $columnArray = ['A','B','C','D'];
+            $rowStart = 2;
+            $rowEnd = 2 + $count;
+            $columnArray = ['A', 'B', 'C', 'D'];
             foreach ($columnArray as $column) {
-                $sheet->getStyle($column.'1')->getFill()
+                $sheet->getStyle($column . '2')->getFill()
                     ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                     ->getStartColor()->setARGB('FF66CDAA');
-                $sheet->getStyle($column.'1')->getFont()->setBold( true );
+                $sheet->getStyle($column . '2')->getFont()->setBold(true);
             }
             $styleArray = [
                 'borders' => [
                     'allBorders' => [
                         'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                         'color' => ['argb' => 'FF708090'],
-                    ],                         
+                    ],
                 ],
             ];
             foreach ($columnArray as $column) {
-                $cellRange = $column.$rowStart.':'.$column.$rowEnd;
+                $cellRange = $column . $rowStart . ':' . $column . $rowEnd;
                 $sheet->getStyle($cellRange)->applyFromArray($styleArray);
                 $sheet->getColumnDimension($column)->setAutoSize(true);
             }
-            $sheet->fromArray($data, null, 'A2');
+            $sheet->fromArray($data, null, 'A3');
 
             // Create a new Xlsx writer
             $writer = new Xlsx($spreadsheet);
             $randomSuffix = Str::random(8);
             // option: can also use buffer instead of file
-            $filePath = storage_path($storage_path . now()->format('Ymd') . '-' . $randomSuffix. '.xlsx');
+            $filePath = storage_path($storage_path . now()->format('Ymd') . '-' . $randomSuffix . '.xlsx');
             $writer->save($filePath);
-            
+
             return ['file' => $filePath, 'error' => false];
         } catch (\Exception $e) {
-            Log::error('ExcelExport Error: '.$e->getMessage());
+            Log::error('ExcelExport Error: ' . $e->getMessage());
             return ['error' => true, 'message' => 'Failed excel export. Please try again later.'];
         }
     }
-
 }
-
-
